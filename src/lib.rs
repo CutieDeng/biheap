@@ -126,10 +126,14 @@ impl <T: Ord> BiHeap<T> {
             return None 
         }; 
         swap(&mut p, &mut self.min_heap[0]); 
+        self.min_heap[0].borrow_mut().minimum_index = 0; 
         let max_index = p.borrow().maximum_index; 
         self.max_heap.swap_remove(max_index); 
+        let is_ok = self.max_heap.get_mut(max_index).map(|a| a.borrow_mut()).map(|mut a| a.maximum_index = max_index).is_some(); 
         self.bubble_down::<true>(0); 
-        self.bubble_down::<false>(max_index);
+        is_ok.then_some(|| {
+            self.bubble_down::<false>(max_index);
+        }); 
         let r = Rc::try_unwrap(p).ok().unwrap(); 
         let r = r.into_inner().value; 
         return Some(r) 
@@ -148,10 +152,14 @@ impl <T: Ord> BiHeap<T> {
             return None 
         }; 
         swap(&mut p, &mut self.max_heap[0]); 
+        self.max_heap[0].borrow_mut().maximum_index = 0; 
         let min_index = p.borrow().minimum_index; 
         self.min_heap.swap_remove(min_index); 
+        let is_ok = self.min_heap.get_mut(min_index).map(|a| a.borrow_mut()).map(|mut a| a.minimum_index = min_index).is_some(); 
         self.bubble_down::<false>(0); 
-        self.bubble_down::<true>(min_index);
+        is_ok.then_some(|| {
+            self.bubble_down::<true>(min_index);
+        }); 
         let r = Rc::try_unwrap(p).ok().unwrap(); 
         let r = r.into_inner().value; 
         return Some(r) 
@@ -225,11 +233,11 @@ impl <T: Ord> BiHeap<T> {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-    }
+impl <T: Ord> BiHeap<T> {
+    pub fn size(&self) -> usize {
+        self.min_heap.len() 
+    } 
 }
+
+#[cfg(test)]
+pub mod tests; 

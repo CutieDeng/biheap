@@ -112,26 +112,49 @@ impl <T: Ord> BiHeap<T> {
 }
  
 impl <T: Ord> BiHeap<T> {
-    pub fn pop_min(&mut self) -> bool {
+    pub fn pop_min(&mut self) -> Option<T> {
         if self.min_heap.len() == 1 {
             self.min_heap.pop(); 
-            self.max_heap.pop(); 
-            return true; 
+            let max = self.max_heap.pop(); 
+            let max = max.unwrap(); 
+            let rc = Rc::try_unwrap(max).ok().unwrap(); 
+            let rc = rc.into_inner(); 
+            return Some(rc.value) 
         }
         let p = self.min_heap.pop(); 
         let Some(mut p) = p else {
-            return false;  
+            return None 
         }; 
         swap(&mut p, &mut self.min_heap[0]); 
         let max_index = p.borrow().maximum_index; 
-        let sr = self.max_heap.swap_remove(max_index); 
+        self.max_heap.swap_remove(max_index); 
         self.bubble_down::<true>(0); 
         self.bubble_down::<false>(max_index);
-        drop(sr); 
-        return true; 
+        let r = Rc::try_unwrap(p).ok().unwrap(); 
+        let r = r.into_inner().value; 
+        return Some(r) 
     }
     pub fn pop_max(&mut self) -> Option<T> {
-        todo!()
+        if self.max_heap.len() == 1 {
+            self.max_heap.pop(); 
+            let min = self.min_heap.pop(); 
+            let min = min.unwrap(); 
+            let rc = Rc::try_unwrap(min).ok().unwrap(); 
+            let rc = rc.into_inner(); 
+            return Some(rc.value) 
+        }
+        let p = self.max_heap.pop(); 
+        let Some(mut p) = p else {
+            return None 
+        }; 
+        swap(&mut p, &mut self.max_heap[0]); 
+        let min_index = p.borrow().minimum_index; 
+        self.min_heap.swap_remove(min_index); 
+        self.bubble_down::<false>(0); 
+        self.bubble_down::<true>(min_index);
+        let r = Rc::try_unwrap(p).ok().unwrap(); 
+        let r = r.into_inner().value; 
+        return Some(r) 
     } 
 }
 

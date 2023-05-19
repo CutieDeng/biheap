@@ -57,7 +57,7 @@ impl <T: Ord> BiHeap<T> {
             assert_eq!(minr.min_index, i); 
             let max_i = min.borrow().max_index; 
             let max = &bi_vec.max[max_i]; 
-            assert!(Rc::ptr_eq(max, min));
+            assert!(std::rc::Rc::ptr_eq(max, min));
         } 
     }
 }

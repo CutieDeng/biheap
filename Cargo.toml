@@ -1,6 +1,6 @@
 [package]
 name = "biheap"
-version = "0.2.2" 
+version = "0.3.1" 
 edition = "2021"
 description = "A binary heap that supports efficient removal of extremet  elements."
 license = "MIT OR Apache-2.0"
@@ -10,5 +10,6 @@ email = "Dhdreamer@126.com"
 
 [dependencies]
 
-[feature] 
+[features] 
 threadsafe = [] 
+# default = ["threadsafe"] 

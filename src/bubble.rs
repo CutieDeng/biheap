@@ -14,15 +14,31 @@ pub type BubbleResult = Result<BubbleOk, BubbleErr>;
 
 impl <T: Ord> BiHeap<T> {
     pub (crate) fn bubble_down<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
-        let mut bi_vec = self.bi_vec.borrow_mut(); 
-        bi_vec.bubble_down::<IS_MIN>(index) 
+        #[cfg(feature = "threadsafe")] 
+        {
+            let mut bi_vec = self.bi_vec.lock().unwrap(); 
+            bi_vec.bubble_down::<IS_MIN>(index)  
+        }
+        #[cfg(not(feature = "threadsafe"))] 
+        {
+            let mut bi_vec = self.bi_vec.borrow_mut(); 
+            bi_vec.bubble_down::<IS_MIN>(index) 
+        } 
     }
 }
 
 impl <T: Ord> BiHeap<T> {
     pub (crate) fn bubble_pop<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
-        let mut bi_vec = self.bi_vec.borrow_mut(); 
-        bi_vec.bubble_pop::<IS_MIN>(index) 
+        #[cfg(feature = "threadsafe")] 
+        {
+            let mut bi_vec = self.bi_vec.lock().unwrap(); 
+            bi_vec.bubble_pop::<IS_MIN>(index)  
+        }
+        #[cfg(not(feature = "threadsafe"))] 
+        {
+            let mut bi_vec = self.bi_vec.borrow_mut(); 
+            bi_vec.bubble_pop::<IS_MIN>(index) 
+        } 
     }
 }
 

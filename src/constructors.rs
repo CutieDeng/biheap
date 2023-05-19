@@ -6,9 +6,9 @@ impl <T: Ord> BiHeap<T> {
             max: Vec::new(), 
             min: Vec::new(), 
         }; 
-        #[cfg(threadsafe)]
+        #[cfg(feature = "threadsafe")]
         let bi_vec = Shared::new(std::sync::Mutex::new(bi_vec)); 
-        #[cfg(not(threadsafe))] 
+        #[cfg(not(feature = "threadsafe"))] 
         let bi_vec = Shared::new(std::cell::RefCell::new(bi_vec)); 
         BiHeap {
             bi_vec, 
@@ -19,9 +19,9 @@ impl <T: Ord> BiHeap<T> {
             max: Vec::with_capacity(capacity), 
             min: Vec::with_capacity(capacity), 
         }; 
-        #[cfg(threadsafe)]
+        #[cfg(feature = "threadsafe")] 
         let bi_vec = Shared::new(std::sync::Mutex::new(bi_vec)); 
-        #[cfg(not(threadsafe))] 
+        #[cfg(not(feature = "threadsafe"))] 
         let bi_vec = Shared::new(std::cell::RefCell::new(bi_vec)); 
         BiHeap {
             bi_vec, 

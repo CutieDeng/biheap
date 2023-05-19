@@ -1,10 +1,10 @@
-use crate::core::{BiHeap, Shared};
+use super::{BiHeap, Shared};
 
 impl <T: Ord> BiHeap<T> {
     pub fn push(&mut self, value: T) {
         let mut bi_vec = self.bi_vec.borrow_mut(); 
         let index = bi_vec.max.len(); 
-        let value = crate::core::RawNode {
+        let value = super::RawNode {
             data: value, 
             min_index: index, 
             max_index: index, 

@@ -1,7 +1,7 @@
 use std::cell::{Ref, RefCell};
 use std::rc::Rc;
 
-use crate::core::{RawNode, BiHeap, Weak, RawBiVec};
+use super::{RawNode, BiHeap, Weak, RawBiVec};
 
 pub struct View<T: Ord> {
     pub (crate) origin_heap: Weak<RawBiVec<T>>, 

@@ -1,4 +1,4 @@
-use crate::core::{BiHeap, RawBiVec};
+use super::{BiHeap, RawBiVec};
 
 pub enum BubbleOk {
     EndsAt(usize), 

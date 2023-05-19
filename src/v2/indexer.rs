@@ -1,6 +1,6 @@
 use std::{rc::Rc, cell::{Ref, RefCell}};
 
-use crate::core::{Weak, RawBiVec, RawNode, BiHeap};
+use super::{Weak, RawBiVec, RawNode, BiHeap};
 
 pub struct HeapIndexer <T: Ord> {
     pub(crate) owner: Weak<RawBiVec<T>>, 
@@ -46,8 +46,8 @@ pub enum HeapIndexerErrorNotOwned {
 } 
 
 pub struct ValueViewOnHeap <'a, T: Ord> where Self : 'a {
-    pub(crate) actual: Rc<RefCell<RawNode<T>>>, 
-    pub(crate) data: Option<Ref<'a, RawNode<T>>>, 
+    pub(crate) _actual: Rc<RefCell<RawNode<T>>>, 
+    pub(crate) _data: Option<Ref<'a, RawNode<T>>>, 
 } 
 
 /// Consumers  
@@ -59,7 +59,7 @@ impl <T: Ord> BiHeap<T> {
             return Err(Error::OwnerHeapMismatch);   
         }
         let node = indexer.indexer.upgrade().ok_or(Error::IndexerNodeHasDropped)?; 
-        let ret = unsafe { node.try_borrow_unguarded() }; 
+        let _ret = unsafe { node.try_borrow_unguarded() }; 
         // ret.map_err(|_| Error::IndexerNodeOccupied).map(|x| &x.data) 
         unimplemented!()
     }

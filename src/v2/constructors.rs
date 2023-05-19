@@ -1,4 +1,4 @@
-use crate::core::{BiHeap, RawBiVec, Shared};
+use super::{BiHeap, RawBiVec, Shared};
 
 impl <T: Ord> BiHeap<T> {
     pub fn new() -> Self {

@@ -1,4 +1,4 @@
-use crate::core::BiHeap;
+use super::BiHeap;
 
 impl <T: Ord> BiHeap<T> {
     pub fn pop_max(&mut self) -> Option<T> {

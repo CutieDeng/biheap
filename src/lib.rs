@@ -1,8 +1,20 @@
 use std::mem::swap;
 use std::cell::{RefCell, Ref};
 use std::rc::Rc;
-use std::cmp::Ordering; 
+use std::cmp::Ordering;
 
+// trait BiHeap {
+//     type DataType: Ord; 
+//     fn push(&mut self, value: Self::DataType); 
+//     fn pop_max(&mut self) -> Option<Self::DataType>; 
+//     fn pop_min(&mut self) -> Option<Self::DataType>; 
+//     fn peek_max(&self) -> Option<&Self::DataType>; 
+//     fn peek_min(&self) -> Option<&Self::DataType>; 
+// }
+
+/// Node structure, which is used to store the data in the biheap. 
+/// 
+/// The `maximum_index` and `minimum_index` fields are used to store the index of the node in the max heap and min heap respectively. 
 pub struct Node <T> {
     value: T, 
     minimum_index: usize, 
@@ -10,14 +22,76 @@ pub struct Node <T> {
 }
 
 impl <T> Node<T> {
+    // peek the value with reference. 
     pub fn value(&self) -> &T {
         &self.value
     }
 } 
 
+pub struct NodeHandle <'a, T: Ord> {
+    node: Rc<RefCell<Node<T>>>, 
+    heap: &'a mut BiHeap<T>,
+}
+
+impl <'a, T: Ord> NodeHandle<'a, T> {
+    pub fn value<'b>(&'b self) -> Ref<'b, Node<T>> {
+        self.node.borrow() 
+    }
+    pub fn set_value(&mut self, mut value: T) -> T {
+        swap(
+            &mut self.node.borrow_mut().value, 
+            &mut value, 
+        ); 
+        self.heap.bubble_up::<true>(self.node.borrow().minimum_index); 
+        self.heap.bubble_down::<true>(self.node.borrow().minimum_index);
+        self.heap.bubble_up::<false>(self.node.borrow().maximum_index); 
+        self.heap.bubble_down::<false>(self.node.borrow().maximum_index); 
+        value 
+    } 
+    pub fn pop(self) -> T {
+        let node = self.node; 
+        let heap = self.heap; 
+        let min_index = node.borrow().minimum_index; 
+        let max_index = node.borrow().maximum_index; 
+        heap.min_heap.swap_remove(min_index); 
+        heap.max_heap.swap_remove(max_index); 
+        if min_index < heap.min_heap.len() {
+            heap.min_heap[min_index].borrow_mut().minimum_index = min_index; 
+            heap.bubble_down::<true>(min_index); 
+        } 
+        if max_index < heap.max_heap.len() {
+            heap.max_heap[max_index].borrow_mut().maximum_index = max_index; 
+            heap.bubble_down::<false>(max_index); 
+        } 
+        let val = Rc::try_unwrap(node).ok().unwrap().into_inner().value;  
+        val 
+    }
+}
+
 pub struct BiHeap <T: Ord> {
     min_heap: Vec<Rc<RefCell<Node<T>>>>, 
     max_heap: Vec<Rc<RefCell<Node<T>>>>, 
+}
+
+impl <T: Ord> BiHeap<T> {
+    pub fn max_handle(&mut self) -> Option<NodeHandle<'_, T>> { 
+        let node = self.max_heap.get(0).map(Rc::clone); 
+        node.map(|node| {
+            NodeHandle {
+                node, 
+                heap: self, 
+            } 
+        })
+    }
+    pub fn min_handle(&mut self) -> Option<NodeHandle<'_, T>> { 
+        let node = self.min_heap.get(0).map(Rc::clone); 
+        node.map(|node| {
+            NodeHandle {
+                node, 
+                heap: self, 
+            } 
+        }) 
+    }
 }
 
 impl <T: Ord> BiHeap<T> {

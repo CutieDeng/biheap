@@ -38,3 +38,9 @@ pub struct BiHeap <T: Ord> {
     pub(crate) bi_vec: Shared<RawBiVec<T>>, 
 }
 
+impl <T: Ord> BiHeap<T> {
+    pub fn len(&self) -> usize {
+        let bi_vec = self.bi_vec.borrow(); 
+        bi_vec.max.len() 
+    }
+}

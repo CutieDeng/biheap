@@ -1,3 +1,5 @@
+//! The v0.1.0 realization 
+
 use std::mem::swap;
 use std::cell::{RefCell, Ref};
 use std::rc::Rc;
@@ -303,11 +305,3 @@ impl <T: Ord> BiHeap<T> {
         self.min_heap.len() 
     } 
 }
-
-#[cfg(test)]
-pub mod tests; 
-
-pub mod core; 
-
-pub mod constructors; 
-pub mod bubble; 

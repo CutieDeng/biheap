@@ -59,8 +59,13 @@ impl <T: Ord> RawBiVec<T> {
                 }
             } 
             vec.swap(select, index); 
-            vec[select].borrow_mut().min_index = select; 
-            vec[index].borrow_mut().min_index = index; 
+            if IS_MIN {
+                vec[select].borrow_mut().min_index = select; 
+                vec[index].borrow_mut().min_index = index; 
+            } else {
+                vec[select].borrow_mut().max_index = select; 
+                vec[index].borrow_mut().max_index = index; 
+            }
             index = select; 
         }
         if index == old_index {
@@ -92,8 +97,13 @@ impl <T: Ord> RawBiVec<T> {
                 }
             } 
             vec.swap(index, parent); 
-            vec[index].borrow_mut().min_index = index; 
-            vec[parent].borrow_mut().min_index = parent; 
+            if IS_MIN {
+                vec[index].borrow_mut().min_index = index; 
+                vec[parent].borrow_mut().min_index = parent; 
+            } else {
+                vec[index].borrow_mut().max_index = index; 
+                vec[parent].borrow_mut().max_index = parent; 
+            }
             index = parent; 
         }
         if index == old_index {

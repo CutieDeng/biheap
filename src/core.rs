@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 
 #[cfg(not(threadsafe))]
 pub type Shared<T> = std::rc::Rc<std::cell::RefCell<T>>; 
@@ -42,5 +44,22 @@ impl <T: Ord> BiHeap<T> {
     pub fn len(&self) -> usize {
         let bi_vec = self.bi_vec.borrow(); 
         bi_vec.max.len() 
+    }
+}
+
+impl <T: Ord> BiHeap<T> {
+    pub(crate) fn debug_check(&self) {
+        let bi_vec = self.bi_vec.borrow(); 
+        let max_len = bi_vec.max.len(); 
+        let min_len = bi_vec.min.len(); 
+        assert_eq!(max_len, min_len); 
+        for i in 0..max_len {
+            let min = &bi_vec.min[i]; 
+            let minr = min.borrow(); 
+            assert_eq!(minr.min_index, i); 
+            let max_i = min.borrow().max_index; 
+            let max = &bi_vec.max[max_i]; 
+            assert!(Rc::ptr_eq(max, min));
+        } 
     }
 }

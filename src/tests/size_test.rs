@@ -6,20 +6,26 @@ use super::*;
 fn empty() {
     let heap: BiHeap<i32> = BiHeap::new(); 
     assert_eq!(heap.len(), 0); 
+    heap.debug_check();
 } 
 
 #[test] 
 fn one() {
     let mut heap = BiHeap::new(); 
+    heap.debug_check();
     heap.push(1); 
     assert_eq!(heap.len(), 1);  
+    heap.debug_check();
 }
 
 #[test] 
 fn two() {
     let mut heap = BiHeap::new(); 
+    heap.debug_check();
     heap.push(1); 
+    heap.debug_check();
     heap.push(2); 
+    heap.debug_check();
     assert_eq!(heap.len(), 2); 
 }
 

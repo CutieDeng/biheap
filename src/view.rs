@@ -1,4 +1,5 @@
 use std::cell::{Ref, RefCell};
+use std::os::macos::raw;
 use std::rc::Rc;
 
 use crate::core::{RawNode, BiHeap, Weak, RawBiVec};
@@ -25,17 +26,15 @@ impl <T: Ord> View <T> {
             min_index = raw_node.min_index; 
             max_index = raw_node.max_index; 
         }
-        // drop(raw_node); 
-        let val_node = origin_heap.min[min_index].clone(); 
         origin_heap.min.swap_remove(min_index); 
+        origin_heap.min.get_mut(min_index).map(|node| node.borrow_mut().min_index = min_index); 
         origin_heap.max.swap_remove(max_index); 
+        origin_heap.max.get_mut(max_index).map(|node| node.borrow_mut().max_index = max_index); 
         let _ = origin_heap.bubble_down::<true>(min_index); 
-        let _ = origin_heap.bubble_pop::<true>(min_index);
-        let _ = origin_heap.bubble_down::<false>(max_index);
+        let _ = origin_heap.bubble_pop::<true>(min_index); 
+        let _ = origin_heap.bubble_down::<false>(max_index); 
         let _ = origin_heap.bubble_pop::<false>(max_index); 
-        dbg!(Rc::ptr_eq(&raw_node, &val_node));
-        assert_eq!(Rc::strong_count(&val_node), 1); 
-        let val = std::rc::Rc::try_unwrap(val_node).ok().unwrap().into_inner();
+        let val = std::rc::Rc::try_unwrap(raw_node).ok().unwrap().into_inner();
         Ok(val.data) 
     }
 }

@@ -47,7 +47,9 @@ impl <'a, T: Ord> NodeHandle<'a, T> {
         let min_index = node.borrow().minimum_index; 
         let max_index = node.borrow().maximum_index; 
         heap.min_heap.swap_remove(min_index); 
+        heap.min_heap.get_mut(min_index).map(|f| f.borrow_mut()).map(|mut f| f.minimum_index = min_index); 
         heap.max_heap.swap_remove(max_index); 
+        heap.max_heap.get_mut(max_index).map(|f| f.borrow_mut()).map(|mut f| f.maximum_index = max_index); 
         if min_index < heap.min_heap.len() {
             heap.min_heap[min_index].borrow_mut().minimum_index = min_index; 
             heap.bubble_down::<true>(min_index); 

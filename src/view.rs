@@ -1,5 +1,4 @@
 use std::cell::{Ref, RefCell};
-use std::os::macos::raw;
 use std::rc::Rc;
 
 use crate::core::{RawNode, BiHeap, Weak, RawBiVec};

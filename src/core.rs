@@ -1,6 +1,3 @@
-use std::rc::Rc;
-
-
 #[cfg(not(threadsafe))]
 pub type Shared<T> = std::rc::Rc<std::cell::RefCell<T>>; 
 #[cfg(threadsafe)]
@@ -48,6 +45,7 @@ impl <T: Ord> BiHeap<T> {
 }
 
 impl <T: Ord> BiHeap<T> {
+    #[cfg(test)]
     pub(crate) fn debug_check(&self) {
         let bi_vec = self.bi_vec.borrow(); 
         let max_len = bi_vec.max.len(); 

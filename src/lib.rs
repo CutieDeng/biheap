@@ -3,16 +3,7 @@ use std::cell::{RefCell, Ref};
 use std::rc::Rc;
 use std::cmp::Ordering;
 
-// trait BiHeap {
-//     type DataType: Ord; 
-//     fn push(&mut self, value: Self::DataType); 
-//     fn pop_max(&mut self) -> Option<Self::DataType>; 
-//     fn pop_min(&mut self) -> Option<Self::DataType>; 
-//     fn peek_max(&self) -> Option<&Self::DataType>; 
-//     fn peek_min(&self) -> Option<&Self::DataType>; 
-// }
-
-/// Node structure, which is used to store the data in the biheap. 
+/// Inner Node Structure. 
 /// 
 /// The `maximum_index` and `minimum_index` fields are used to store the index of the node in the max heap and min heap respectively. 
 pub struct Node <T> {
@@ -315,3 +306,8 @@ impl <T: Ord> BiHeap<T> {
 
 #[cfg(test)]
 pub mod tests; 
+
+pub mod core; 
+
+pub mod constructors; 
+pub mod bubble; 

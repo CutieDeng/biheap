@@ -5,6 +5,7 @@ pub enum BubbleOk {
     NotChange, 
 }
 
+#[derive(Debug)] 
 pub enum BubbleErr {
     OutOfBounds, 
 }
@@ -25,27 +26,27 @@ impl <T: Ord> BiHeap<T> {
             let mut select = left; 
             vec.get(left+1).map(|right| {
                 if IS_MIN {
-                    if right.data < vec[left].data {
+                    if right.borrow().data < vec[left].borrow().data {
                         select = left + 1; 
                     }  
                 } else {
-                    if right.data > vec[left].data {
+                    if right.borrow().data > vec[left].borrow().data {
                         select = left + 1;  
                     } 
                 }
             }); 
             if IS_MIN {
-                if vec[select].data >= vec[index].data {
+                if vec[select].borrow().data >= vec[index].borrow().data {
                     break; 
                 }
             } else {
-                if vec[select].data <= vec[index].data {
+                if vec[select].borrow().data <= vec[index].borrow().data {
                     break; 
                 }
             } 
             vec.swap(select, index); 
-            vec[select].min_index = select; 
-            vec[index].min_index = index; 
+            vec[select].borrow_mut().min_index = select; 
+            vec[index].borrow_mut().min_index = index; 
             index = select; 
         }
         if index == old_index {
@@ -68,17 +69,17 @@ impl <T: Ord> BiHeap<T> {
             if index == 0 { break; } 
             let parent = (index - 1) / 2; 
             if IS_MIN {
-                if vec[index].data >= vec[parent].data {
+                if vec[index].borrow().data >= vec[parent].borrow().data {
                     break; 
                 }
             } else {
-                if vec[index].data <= vec[parent].data {
+                if vec[index].borrow().data <= vec[parent].borrow().data {
                     break; 
                 }
             } 
             vec.swap(index, parent); 
-            vec[index].min_index = index; 
-            vec[parent].min_index = parent; 
+            vec[index].borrow_mut().min_index = index; 
+            vec[parent].borrow_mut().min_index = parent; 
             index = parent; 
         }
         if index == old_index {

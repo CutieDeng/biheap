@@ -21,8 +21,8 @@ pub struct RawNode <T> {
 
 /// Data structure to store the two heap 
 pub struct RawBiVec <T> {
-    pub max: Vec<RawNode<T>>, 
-    pub min: Vec<RawNode<T>>, 
+    pub max: Vec<Shared<RawNode<T>>>, 
+    pub min: Vec<Shared<RawNode<T>>>, 
 }
 
 /// Data structure to store the two heap 

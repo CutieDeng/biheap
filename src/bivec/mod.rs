@@ -11,4 +11,6 @@ mod construct;
 mod extend;
 mod push;
 mod pop;
-pub mod view; 
+
+pub mod view;
+pub mod order; 

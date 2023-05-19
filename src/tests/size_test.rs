@@ -1,6 +1,4 @@
-use crate::core::BiHeap;
-
-use super::*; 
+use crate::core::*; 
 
 #[test] 
 fn empty() {

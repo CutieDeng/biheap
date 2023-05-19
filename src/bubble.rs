@@ -1,4 +1,4 @@
-use crate::core::BiHeap;
+use crate::core::{BiHeap, RawBiVec};
 
 pub enum BubbleOk {
     EndsAt(usize), 
@@ -15,6 +15,20 @@ pub type BubbleResult = Result<BubbleOk, BubbleErr>;
 impl <T: Ord> BiHeap<T> {
     pub (crate) fn bubble_down<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
         let mut bi_vec = self.bi_vec.borrow_mut(); 
+        bi_vec.bubble_down::<IS_MIN>(index) 
+    }
+}
+
+impl <T: Ord> BiHeap<T> {
+    pub (crate) fn bubble_pop<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
+        let mut bi_vec = self.bi_vec.borrow_mut(); 
+        bi_vec.bubble_pop::<IS_MIN>(index) 
+    }
+}
+
+impl <T: Ord> RawBiVec<T> {
+    pub (crate) fn bubble_down<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
+        let bi_vec = self; 
         let len = bi_vec.max.len(); 
         (index < len).then_some(()).ok_or(BubbleErr::OutOfBounds)?;
         let old_index = index; 
@@ -57,9 +71,9 @@ impl <T: Ord> BiHeap<T> {
     }
 }
 
-impl <T: Ord> BiHeap<T> {
+impl <T: Ord> RawBiVec<T> {
     pub (crate) fn bubble_pop<const IS_MIN: bool>(&mut self, index: usize) -> BubbleResult {
-        let mut bi_vec = self.bi_vec.borrow_mut(); 
+        let bi_vec = self; 
         let len = bi_vec.max.len(); 
         (index < len).then_some(()).ok_or(BubbleErr::OutOfBounds)?;
         let old_index = index; 

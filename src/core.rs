@@ -2,7 +2,12 @@
 #[cfg(not(threadsafe))]
 pub type Shared<T> = std::rc::Rc<std::cell::RefCell<T>>; 
 #[cfg(threadsafe)]
-type Shared<T> = std::sync::Arc<std::sync::Mutex<T>>; 
+pub type Shared<T> = std::sync::Arc<std::sync::Mutex<T>>; 
+
+#[cfg(not(threadsafe))] 
+pub type Weak<T> = std::rc::Weak<std::cell::RefCell<T>>; 
+#[cfg(threadsafe)] 
+pub type Weak<T> = std::sync::Weak<std::sync::Mutex<T>>; 
 
 /// Data simple structure to store the data. 
 /// 

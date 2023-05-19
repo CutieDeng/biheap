@@ -33,3 +33,30 @@ impl <T: Ord> View <T> {
         Ok(val.data) 
     }
 }
+
+impl <T: Ord> View<T> {
+    pub fn swap_with(&mut self, f: impl FnOnce() -> T) -> Result<T, TakeErr> {
+        let origin_heap = self.origin_heap.upgrade().ok_or(TakeErr::HeapDroped)?; 
+        let raw_node = self.raw_node.upgrade().ok_or(TakeErr::NodeMissing)?; 
+        let mut origin_heap = origin_heap.borrow_mut(); 
+        let (min_index, max_index); 
+        {
+            let raw_node = raw_node.borrow(); 
+            min_index = raw_node.min_index; 
+            max_index = raw_node.max_index; 
+        }
+        let val_node = origin_heap.min[min_index].clone(); 
+        let mut f = f(); 
+        std::mem::swap(&mut val_node.borrow_mut().data, &mut f); 
+        drop(val_node); 
+        let _ = origin_heap.bubble_down::<true>(min_index); 
+        let _ = origin_heap.bubble_pop::<true>(min_index);
+        let _ = origin_heap.bubble_down::<false>(max_index);
+        let _ = origin_heap.bubble_pop::<false>(max_index); 
+        Ok(f) 
+    }
+    #[inline]
+    pub fn swap(&mut self, val: T) -> Result<T, TakeErr> {
+        self.swap_with(|| val) 
+    }
+}

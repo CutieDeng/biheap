@@ -9,4 +9,5 @@ pub struct BiVec <T> {
 
 mod construct; 
 mod extend;
-mod push; 
+mod push;
+mod pop; 

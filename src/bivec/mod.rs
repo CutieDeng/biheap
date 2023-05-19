@@ -10,4 +10,5 @@ pub struct BiVec <T> {
 mod construct; 
 mod extend;
 mod push;
-mod pop; 
+mod pop;
+pub mod view; 

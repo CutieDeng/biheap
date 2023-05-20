@@ -1,16 +1,16 @@
 use super::*; 
 
 impl <T: Ord> BiHeap<T> {
-    /// Returns the maximum element handle of the heap. 
+    /// Returns the maximum element indexer of the heap. 
     /// 
     /// # Examples 
     /// ``` 
     /// use biheap::BiHeap; 
     /// let mut be = BiHeap::new(); 
     /// be.push(1); 
-    /// let handle = be.max_handle(); 
+    /// let handle = be.max_indexer(); 
     /// ``` 
-    pub fn max_handle(&self) -> Option<Handle<T>> {
+    pub fn max_indexer(&self) -> Option<Handle<T>> {
         let borrow = self.0.borrow(); 
         let slice = borrow.views(); 
         let slice = &slice[1]; 
@@ -25,6 +25,10 @@ impl <T: Ord> BiHeap<T> {
             })
         }
     }  
+    #[deprecated(note = "Use `max_indexer` instead")] 
+    pub fn max_handle(&self) -> Option<Handle<T>> {
+        self.max_indexer() 
+    }
     /// Returns the minimum element handle of the heap. 
     /// 
     /// # Examples 
@@ -32,9 +36,9 @@ impl <T: Ord> BiHeap<T> {
     /// use biheap::BiHeap; 
     /// let mut be = BiHeap::new(); 
     /// be.push(1); 
-    /// let handle = be.min_handle(); 
+    /// let handle = be.min_indexer(); 
     /// ``` 
-    pub fn min_handle(&self) -> Option<Handle<T>> {
+    pub fn min_indexer(&self) -> Option<Handle<T>> {
         let borrow = self.0.borrow(); 
         let slice = borrow.views(); 
         let slice = &slice[0]; 
@@ -48,5 +52,9 @@ impl <T: Ord> BiHeap<T> {
                 heap_ref, 
             })
         } 
+    }
+    #[deprecated(note = "Use `min_indexer` instead")]
+    pub fn min_handle(&self) -> Option<Handle<T>> {
+        self.min_indexer() 
     }
 }

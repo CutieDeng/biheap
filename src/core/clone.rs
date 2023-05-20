@@ -1,8 +1,13 @@
 use super::*; 
 
 impl <T: Ord + Clone> Clone for BiHeap<T> {
-    /// Unimplemneted 
+    /// # TODO 
+    /// Optimize the time complexity of this function. 
     fn clone(&self) -> Self {
-        unimplemented!()
+        let mut heap = Self::with_capacity(self.len());
+        for item in self.iter() { 
+            heap.push(item.clone());
+        } 
+        heap 
     }
 }

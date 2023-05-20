@@ -5,7 +5,7 @@ fn middle_pop() {
     let mut bh = BiHeap::new(); 
     bh.push(1); 
     bh.push(2); 
-    let value2 = bh.max_handle().unwrap(); 
+    let value2 = bh.max_indexer().unwrap(); 
     bh.push(3); 
     assert_eq!( bh.len(), 3 ); 
     let pop = bh.peek_mut(&value2).unwrap().pop(); 
@@ -21,7 +21,7 @@ fn middle_pop() {
 fn loss_pop() {
     let mut bh = BiHeap::new(); 
     bh.push(1); 
-    let value = bh.min_handle().unwrap(); 
+    let value = bh.max_indexer().unwrap(); 
     drop(bh);  
     bh = BiHeap::new(); 
     bh.push(3); 
@@ -33,8 +33,8 @@ fn loss_pop() {
 fn missing_pop() {
     let mut bh = BiHeap::new(); 
     bh.push(1); 
-    let h1 = bh.min_handle().unwrap(); 
-    let h2 = bh.max_handle().unwrap(); 
+    let h1 = bh.min_indexer().unwrap(); 
+    let h2 = bh.max_indexer().unwrap(); 
     let val = bh.peek_mut(&h1).unwrap().pop(); 
     assert_eq!( val, 1 ); 
     let peek1 = bh.peek(&h1); 

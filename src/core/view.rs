@@ -14,7 +14,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(min, &1); 
     /// ``` 
     pub fn peek_min(&self) -> Option<&T> {
-        let handle = self.min_handle()?; 
+        let handle = self.min_indexer()?; 
         let value = self.peek(&handle).unwrap(); 
         Some(value) 
     }
@@ -31,7 +31,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(max, &3); 
     /// ``` 
     pub fn peek_max(&self) -> Option<&T> {
-        let handle = self.max_handle()?; 
+        let handle = self.max_indexer()?; 
         let value = self.peek(&handle).unwrap(); 
         Some(value) 
     } 
@@ -50,7 +50,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(min, 2); 
     /// ``` 
     pub fn pop_min(&mut self) -> Option<T> {
-        let handle = self.min_handle()?; 
+        let handle = self.min_indexer()?; 
         let value = self.peek_mut(&handle).unwrap(); 
         Some(value.pop()) 
     }
@@ -69,7 +69,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(max, 2);
     /// ```
     pub fn pop_max(&mut self) -> Option<T> {
-        let handle = self.max_handle()?; 
+        let handle = self.max_indexer()?; 
         let value = self.peek_mut(&handle).unwrap(); 
         Some(value.pop()) 
     } 
@@ -88,7 +88,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(be.peek_min().unwrap(), &2); 
     /// ``` 
     pub fn peek_min_mut(&mut self) -> Option<PeekMut<'_, T>> {
-        let handle = self.min_handle()?; 
+        let handle = self.min_indexer()?; 
         let value = self.peek_mut(&handle).unwrap(); 
         Some(value)  
     }
@@ -107,7 +107,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(be.peek_max().unwrap(), &2); 
     /// ``` 
     pub fn peek_max_mut(&mut self) -> Option<PeekMut<'_, T>> {
-        let handle = self.max_handle()?; 
+        let handle = self.max_indexer()?; 
         let value = self.peek_mut(&handle).unwrap(); 
         Some(value)   
     }

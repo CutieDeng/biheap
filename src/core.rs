@@ -28,7 +28,7 @@ pub type ViewMut<'a, T> = PeekMut<'a, T>;
 mod construct;
 mod push;
 mod bubble;
-mod handle;
+mod indexer;
 mod view;
 mod peek;
 mod pop;

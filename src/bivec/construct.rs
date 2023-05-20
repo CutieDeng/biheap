@@ -17,6 +17,9 @@ impl <T> BiVec<T> {
 
 impl <T> BiVec<T> {
     pub fn with_capacity(capacity: usize) -> Self {
+        if capacity == 0 {
+            return BiVec::new(); 
+        }
         let layout : Layout = Layout::array::<T>(capacity).unwrap(); 
         let ptr = unsafe { std::alloc::alloc(layout) } as *const T;  
         let ptr2 = unsafe { std::alloc::alloc(layout) } as *const T; 

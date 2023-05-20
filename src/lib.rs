@@ -6,3 +6,5 @@ pub mod v2;
 
 pub mod core; 
 pub mod bivec;
+
+pub use crate::core::BiHeap; 

@@ -1,6 +1,6 @@
 [package]
 name = "biheap"
-version = "0.3.3" 
+version = "0.3.4" 
 edition = "2021"
 description = "A heap group that supports efficient removal of extreme elements."
 license = "MIT OR Apache-2.0"
@@ -10,5 +10,3 @@ license = "MIT OR Apache-2.0"
 [dependencies]
 
 [features] 
-threadsafe = [] 
-# default = ["threadsafe"] 

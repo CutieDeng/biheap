@@ -22,7 +22,8 @@ It can be used to modify the data in the heap, peek it, reset it, or remove it.
 
 ## Latest Version Log 
 
-Add some methods to make the BiHeap more convenient to use, like std::collections::BinaryHeap. 
+- Add `iter` method. 
+- Add `peek_max_mut`, `peek_min_mut` methods. 
 
 ## Others 
 

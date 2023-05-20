@@ -73,4 +73,42 @@ impl <T: Ord> BiHeap<T> {
         let value = self.peek_mut(&handle).unwrap(); 
         Some(value.pop()) 
     } 
+    /// Returns a mutable reference to the minimum element of the heap. 
+    /// 
+    /// # Examples 
+    /// ``` 
+    /// use biheap::BiHeap; 
+    /// let mut be = BiHeap::new(); 
+    /// be.push(1); 
+    /// be.push(2); 
+    /// be.push(3); 
+    /// let mut min = be.peek_min_mut().unwrap(); 
+    /// *min = 4; 
+    /// drop(min); 
+    /// assert_eq!(be.peek_min().unwrap(), &2); 
+    /// ``` 
+    pub fn peek_min_mut(&mut self) -> Option<PeekMut<'_, T>> {
+        let handle = self.min_handle()?; 
+        let value = self.peek_mut(&handle).unwrap(); 
+        Some(value)  
+    }
+    /// Returns a mutable reference to the maximum element of the heap. 
+    /// 
+    /// # Examples 
+    /// ``` 
+    /// use biheap::BiHeap; 
+    /// let mut be = BiHeap::new(); 
+    /// be.push(1); 
+    /// be.push(2); 
+    /// be.push(3); 
+    /// let mut max = be.peek_max_mut().unwrap(); 
+    /// *max = 0; 
+    /// drop(max); 
+    /// assert_eq!(be.peek_max().unwrap(), &2); 
+    /// ``` 
+    pub fn peek_max_mut(&mut self) -> Option<PeekMut<'_, T>> {
+        let handle = self.max_handle()?; 
+        let value = self.peek_mut(&handle).unwrap(); 
+        Some(value)   
+    }
 }

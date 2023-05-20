@@ -27,4 +27,57 @@ impl <T> BiVec<T> {
         self.capacity = capacity; 
         return ; 
     }
+    pub fn trim(&mut self) {
+        if self.capacity == self.len {
+            return ; 
+        }
+        let (ptr, ptr2); 
+        if self.len != 0 {
+            let layout = std::alloc::Layout::array::<T>(self.len).unwrap(); 
+            ptr = unsafe { std::alloc::alloc(layout) } as *const T; 
+            ptr2 = unsafe { std::alloc::alloc(layout) } as *const T; 
+            unsafe {
+                ptr::copy_nonoverlapping(self.contents[0], ptr as *mut T, self.len); 
+                ptr::copy_nonoverlapping(self.contents[1], ptr2 as *mut T, self.len);  
+            } 
+        } else {
+            ptr = std::ptr::null(); 
+            ptr2 = std::ptr::null();   
+        }
+        if self.capacity != 0 {
+            let layout = std::alloc::Layout::array::<T>(self.capacity).unwrap(); 
+            unsafe {
+                std::alloc::dealloc(self.contents[0] as *mut u8, layout); 
+                std::alloc::dealloc(self.contents[1] as *mut u8, layout); 
+            }
+        } 
+        self.contents[0] = ptr; 
+        self.contents[1] = ptr2; 
+        self.capacity = self.len; 
+    }
+}
+
+#[test] 
+fn reserve_1() {
+    let mut bivec : BiVec<i32> = BiVec::new(); 
+    assert_eq!(bivec.capacity(), 0); 
+    bivec.reserve(10); 
+    assert_eq!(bivec.capacity(), 10);  
+    bivec.reserve(5); 
+    assert_eq!(bivec.capacity(), 10); 
+    bivec.reserve(30); 
+    assert_eq!(bivec.capacity(), 30); 
+}
+
+#[test] 
+fn trim_1() {
+    let mut bivec : BiVec<i32> = BiVec::new(); 
+    bivec.reserve(10); 
+    assert_eq!(bivec.capacity(), 10); 
+    bivec.trim(); 
+    assert_eq!(bivec.capacity(), 0); 
+    bivec.push(0, 1); 
+    assert_eq!(bivec.len(), 1); 
+    bivec.trim(); 
+    assert_eq!(bivec.capacity(), 1); 
 }

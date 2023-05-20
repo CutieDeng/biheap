@@ -27,3 +27,4 @@ mod push;
 mod bubble;
 mod handle;
 mod view;
+mod peek;

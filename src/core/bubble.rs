@@ -34,15 +34,15 @@ impl <T: Ord> BiHeap<T> {
                     }; 
             }
             if should_swap {
-                swap(this, parent); 
+                swap::<Rc<RefCell<Node<T>>>>(this, parent); 
                 let mut this = this.borrow_mut(); 
                 let mut parent = parent.borrow_mut(); 
                 if IS_MIN_FIRST {
-                    this.min_index = parent_index; 
-                    parent.min_index = index; 
+                    this.min_index = index; 
+                    parent.min_index = parent_index; 
                 } else {
-                    this.max_index = parent_index; 
-                    parent.max_index = index;  
+                    this.max_index = index; 
+                    parent.max_index = parent_index; 
                 }
                 index = parent_index; 
             } else {
@@ -119,11 +119,11 @@ impl <T: Ord> BiHeap<T> {
             let mut this = this.borrow_mut(); 
             let mut cell = cell_ref.borrow_mut(); 
             if IS_MIN_FIRST {
-                this.min_index = select; 
-                cell.min_index = index; 
+                this.min_index = index; 
+                cell.min_index = select; 
             } else {
-                this.max_index = select; 
-                cell.max_index = index; 
+                this.max_index = index; 
+                cell.max_index = select;
             } 
             index = select; 
         }

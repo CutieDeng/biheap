@@ -58,6 +58,7 @@ impl <T: Ord> BiHeap<T> {
 
 impl <T: Ord> BiHeap<T> {
     #[cfg(test)]
+    #[allow(dead_code)]
     pub(crate) fn debug_check(&self) {
         let bi_vec = self.bi_vec.borrow(); 
         let max_len = bi_vec.max.len(); 

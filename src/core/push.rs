@@ -15,6 +15,8 @@ impl <T: Ord> BiHeap<T> {
         let node_ref = Rc::downgrade(&value_rc); 
         borrow.push(value_rc, value_rc2); 
         drop(borrow); 
+        self.bubble_up::<true>(len);
+        self.bubble_up::<false>(len); 
         let handle = Handle {
             node_ref, 
             heap_ref: Rc::downgrade(&self.0), 

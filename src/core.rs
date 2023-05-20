@@ -28,3 +28,5 @@ mod bubble;
 mod handle;
 mod view;
 mod peek;
+mod pop;
+mod property;

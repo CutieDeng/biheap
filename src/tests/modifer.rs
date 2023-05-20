@@ -9,8 +9,8 @@ fn middle_to_maximum() {
     bh.push(4); 
     let max1 = bh.peek_max(); 
     assert_eq!(max1, Some(&4)); 
-    let mut view = bh.as_view_mut(&take).unwrap(); 
-    view.set(5); 
+    let mut view = bh.peek_mut(&take).unwrap(); 
+    *view = 5; 
     drop(view); 
     let max2 = bh.peek_max(); 
     assert_eq!(max2, Some(&5)); 
@@ -25,8 +25,8 @@ fn middle_to_minimum() {
     bh.push(4); 
     let min1 = bh.peek_min(); 
     assert_eq!(min1, Some(&1)); 
-    let mut view = bh.as_view_mut(&take).unwrap(); 
-    view.set(0); 
+    let mut view = bh.peek_mut(&take).unwrap(); 
+    *view = 0; 
     drop(view); 
     let min2 = bh.peek_min(); 
     assert_eq!(min2, Some(&0));  

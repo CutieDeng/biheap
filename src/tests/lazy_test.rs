@@ -8,7 +8,7 @@ fn middle_pop() {
     let value2 = bh.max_handle().unwrap(); 
     bh.push(3); 
     assert_eq!( bh.len(), 3 ); 
-    let pop = bh.as_view_mut(&value2).unwrap().pop(); 
+    let pop = bh.peek_mut(&value2).unwrap().pop(); 
     assert_eq!( pop, 2 ); 
     assert_eq!( bh.len(), 2 ); 
     assert_eq!( bh.pop_min().unwrap(), 1 ); 
@@ -16,7 +16,6 @@ fn middle_pop() {
     assert_eq!( bh.pop_min().unwrap(), 3 ); 
     assert_eq!( bh.len(), 0 ); 
 } 
-
 
 #[test] 
 fn loss_pop() {
@@ -26,7 +25,7 @@ fn loss_pop() {
     drop(bh);  
     bh = BiHeap::new(); 
     bh.push(3); 
-    let view_result = bh.as_view(&value); 
+    let view_result = bh.peek(&value); 
     assert!(view_result.is_err());
 }
 
@@ -36,10 +35,10 @@ fn missing_pop() {
     bh.push(1); 
     let h1 = bh.min_handle().unwrap(); 
     let h2 = bh.max_handle().unwrap(); 
-    let val = bh.as_view_mut(&h1).unwrap().pop(); 
+    let val = bh.peek_mut(&h1).unwrap().pop(); 
     assert_eq!( val, 1 ); 
-    let peek1 = bh.as_view(&h1); 
+    let peek1 = bh.peek(&h1); 
     assert!( peek1.is_err() ); 
-    let peek2 = bh.as_view(&h2); 
+    let peek2 = bh.peek(&h2); 
     assert!( peek2.is_err() ); 
 }

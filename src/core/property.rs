@@ -1,8 +1,46 @@
 use super::BiHeap;
 
 impl <T: Ord> BiHeap<T> {
+    /// Returns the length of the heap 
+    /// 
+    /// # Examples 
+    /// ```
+    /// use biheap::BiHeap; 
+    /// let mut be = BiHeap::new(); 
+    /// assert_eq!(be.len(), 0); 
+    /// be.push(1); 
+    /// assert_eq!(be.len(), 1); 
+    /// ``` 
     pub fn len(&self) -> usize {
         self.0.borrow().len() 
+    }
+    /// Checks if the heap is empty. 
+    /// 
+    /// # Examples 
+    /// ```
+    /// use biheap::BiHeap;
+    /// let mut be = BiHeap::new();
+    /// assert!(be.is_empty());
+    /// be.push(1);
+    /// assert!(!be.is_empty());
+    /// ``` 
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0 
+    } 
+    /// Clears the heap, removing all elements. 
+    /// 
+    /// # Examples 
+    /// ```
+    /// use biheap::BiHeap;
+    /// let mut be = BiHeap::new();
+    /// be.push(1);
+    /// be.push(2);
+    /// be.push(3);
+    /// be.clear();
+    /// assert!(be.is_empty());
+    /// ``` 
+    pub fn clear(&mut self) {
+        self.0.borrow_mut().clear();  
     }
 }
 

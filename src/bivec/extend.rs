@@ -55,6 +55,18 @@ impl <T> BiVec<T> {
         self.contents[1] = ptr2; 
         self.capacity = self.len; 
     }
+    pub fn clear(&mut self) {
+        let len = self.len; 
+        for content in self.contents {
+            for i in 0..len {
+                unsafe {
+                    let p = content.add(i) as *mut T; 
+                    ptr::drop_in_place(p); 
+                }
+            } 
+        }
+        self.len = 0; 
+    } 
 }
 
 #[test] 

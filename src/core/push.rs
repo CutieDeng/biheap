@@ -1,6 +1,14 @@
 use super::*; 
 
 impl <T: Ord> BiHeap<T> {
+    /// Pushes a value onto the heap. 
+    /// 
+    /// # Examples 
+    /// ``` 
+    /// use biheap::BiHeap; 
+    /// let mut be = BiHeap::new(); 
+    /// be.push(1); 
+    /// ``` 
     pub fn push(&mut self, value: T) -> Handle<T> {
         let mut borrow = self.0.borrow_mut(); 
         let len = borrow.len(); 

@@ -31,3 +31,9 @@ impl <'a, T: Ord> IntoIterator for &'a BiHeap<T> {
         } 
     }
 }
+
+impl <T: Ord> BiHeap<T> {
+    pub fn iter(&self) -> RefIter<T> {
+        self.into_iter() 
+    } 
+}

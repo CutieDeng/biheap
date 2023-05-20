@@ -45,3 +45,35 @@ impl <T> Drop for BiVec<T> {
         unsafe { std::alloc::dealloc(self.contents[1] as *mut u8, layout) }; 
     } 
 }
+
+#[test] 
+fn test_new_private() {
+    let bivec : BiVec<i32> = BiVec::new(); 
+    assert_eq!(bivec.len, 0); 
+    assert_eq!(bivec.capacity, 0); 
+} 
+
+#[test] 
+fn test_new_public() {
+    let bivec : BiVec<i32> = BiVec::new(); 
+    let len = bivec.len(); 
+    let capacity = bivec.capacity(); 
+    assert_eq!(len, 0); 
+    assert_eq!(capacity, 0); 
+}
+
+#[test] 
+fn test_with_capacity_public() {
+    let bivec : BiVec<i32> = BiVec::with_reserve(10); 
+    let len = bivec.len(); 
+    let capacity = bivec.capacity(); 
+    assert_eq!(len, 0); 
+    assert_eq!(capacity, 10); 
+}
+
+#[test] 
+fn test_with_capacity_private() {
+    let bivec : BiVec<String> = BiVec::with_reserve(20); 
+    assert_eq!(bivec.len, 0); 
+    assert_eq!(bivec.capacity, 20); 
+}

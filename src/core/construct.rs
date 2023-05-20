@@ -1,7 +1,5 @@
 use super::*; 
 
-use crate::bivec::BiVec;
-
 impl <T: Ord> BiHeap<T> {
     pub fn new() -> Self {
         let bivec = BiVec::new(); 

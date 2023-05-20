@@ -1,9 +1,9 @@
 use std::marker::PhantomData;
 
 pub struct BiVec <T> {
-    contents: [*const T; 2], 
-    len: usize, 
-    capacity: usize, 
+    pub(crate) contents: [*const T; 2], 
+    pub(crate) len: usize, 
+    pub(crate) capacity: usize, 
     flag: PhantomData<T>, 
 }
 

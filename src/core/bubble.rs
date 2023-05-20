@@ -69,9 +69,9 @@ impl <T: Ord> BiHeap<T> {
             if left_index >= slice.len() {
                 break; 
             } 
-            let (mut split1, mut split2) = slice.split_at_mut(left_index); 
+            let (split1, split2) = slice.split_at_mut(left_index); 
             let this = &mut split1[index]; 
-            let (mut left, mut others) = split2.split_first_mut().unwrap(); 
+            let (left, others) = split2.split_first_mut().unwrap(); 
             let right = others.first_mut(); 
             let select; 
             let cell_ref; 

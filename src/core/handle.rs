@@ -50,7 +50,7 @@ impl Display for ViewErr {
 }
 
 impl <T: Ord> BiHeap<T> {
-    pub fn as_view(&self, handle: &Handle<T>) -> Result<&T, ViewErr> { 
+    pub fn peek(&self, handle: &Handle<T>) -> Result<&T, ViewErr> { 
         let weak_ref = Rc::downgrade(&self.0); 
         if !Weak::ptr_eq(&weak_ref, &handle.heap_ref) {
             return Err(ViewErr::MismatchHeap);  
@@ -62,10 +62,16 @@ impl <T: Ord> BiHeap<T> {
         let value = unsafe { &*(value as *const T) }; 
         Ok(value) 
     } 
+    #[deprecated]
+    /// # Deprecated 
+    /// Use `peek` instead. 
+    pub fn as_view(&self, handle: &Handle<T>) -> Result<&T, ViewErr> {
+        self.peek(handle) 
+    }
 }
 
 impl <T: Ord> BiHeap<T> {
-    pub fn as_view_mut<'a> (&'a mut self, handle: &'_ Handle<T>) -> Result<ViewMut<'a, T>, ViewErr> {
+    pub fn peek_mut<'a> (&'a mut self, handle: &'_ Handle<T>) -> Result<ViewMut<'a, T>, ViewErr> {
         let weak_ref = Rc::downgrade(&self.0); 
         if !Weak::ptr_eq(&weak_ref, &handle.heap_ref) {
             return Err(ViewErr::MismatchHeap);  
@@ -76,5 +82,11 @@ impl <T: Ord> BiHeap<T> {
             node: Some(value), 
         }; 
         Ok(view)
+    }
+    #[deprecated] 
+    /// # Deprecated 
+    /// Use `peek_mut` instead. 
+    pub fn as_view_mut<'a> (&'a mut self, handle: &'_ Handle<T>) -> Result<ViewMut<'a, T>, ViewErr> {
+        self.peek_mut(handle) 
     }
 }

@@ -6,7 +6,6 @@ impl <'a, T: Ord> ViewMut<'a, T> {
     }
     pub fn set(&mut self, mut value: T) -> T {
         std::mem::swap(&mut value, &mut self.node.as_ref().unwrap().borrow_mut().value); 
-        let bor = self.node.as_ref().unwrap().borrow(); 
         value 
     } 
     pub fn pop(mut self) -> T {

@@ -16,7 +16,7 @@ impl <T> BiVec<T> {
 }
 
 impl <T> BiVec<T> {
-    pub fn with_reserve(capacity: usize) -> Self {
+    pub fn with_capacity(capacity: usize) -> Self {
         let layout : Layout = Layout::array::<T>(capacity).unwrap(); 
         let ptr = unsafe { std::alloc::alloc(layout) } as *const T;  
         let ptr2 = unsafe { std::alloc::alloc(layout) } as *const T; 
@@ -64,7 +64,7 @@ fn test_new_public() {
 
 #[test] 
 fn test_with_capacity_public() {
-    let bivec : BiVec<i32> = BiVec::with_reserve(10); 
+    let bivec : BiVec<i32> = BiVec::with_capacity(10); 
     let len = bivec.len(); 
     let capacity = bivec.capacity(); 
     assert_eq!(len, 0); 
@@ -73,7 +73,7 @@ fn test_with_capacity_public() {
 
 #[test] 
 fn test_with_capacity_private() {
-    let bivec : BiVec<String> = BiVec::with_reserve(20); 
+    let bivec : BiVec<String> = BiVec::with_capacity(20); 
     assert_eq!(bivec.len, 0); 
     assert_eq!(bivec.capacity, 20); 
 }

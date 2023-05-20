@@ -19,7 +19,8 @@ pub struct Indexer <T> {
 
 pub struct PeekMut <'a, T: Ord> {
     pub(crate) bi_heap: &'a mut BiHeap<T>,
-    pub(crate) node: Rc<RefCell<Node<T>>>,
+    // Actaully, it should always be Some, or in my consumming method it will be None, only. 
+    pub(crate) node: Option<Rc<RefCell<Node<T>>>>, 
 }
 
 pub type ViewMut<'a, T> = PeekMut<'a, T>; 

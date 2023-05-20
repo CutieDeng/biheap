@@ -2,22 +2,16 @@ use super::*;
 
 impl <'a, T: Ord> ViewMut<'a, T> {
     pub fn peek(&self) -> &T {
-        unsafe { &self.node.try_borrow_unguarded().unwrap().value } 
+        unsafe { &self.node.as_ref().unwrap().try_borrow_unguarded().unwrap().value } 
     }
     pub fn set(&mut self, mut value: T) -> T {
-        std::mem::swap(&mut value, &mut self.node.borrow_mut().value); 
-        let bor = self.node.borrow(); 
-        let min_index = bor.min_index; 
-        let max_index = bor.max_index; 
-        drop(bor); 
-        self.bi_heap.bubble_down::<true>(min_index);
-        self.bi_heap.bubble_up::<true>(min_index); 
-        self.bi_heap.bubble_down::<false>(max_index); 
-        self.bi_heap.bubble_up::<false>(max_index); 
+        std::mem::swap(&mut value, &mut self.node.as_ref().unwrap().borrow_mut().value); 
+        let bor = self.node.as_ref().unwrap().borrow(); 
         value 
     } 
-    pub fn pop(self) -> T {
-        let bor = self.node.borrow(); 
+    pub fn pop(mut self) -> T {
+        let node = self.node.take().unwrap(); 
+        let bor = node.borrow(); 
         let min_index = bor.min_index; 
         let max_index = bor.max_index; 
         drop(bor); 
@@ -37,22 +31,23 @@ impl <'a, T: Ord> ViewMut<'a, T> {
             self.bi_heap.bubble_down::<false>(max_index); 
             self.bi_heap.bubble_up::<false>(max_index); 
         }
-        let node = self.node;
         let node = Rc::try_unwrap(node).ok().unwrap(); 
         let node = node.into_inner(); 
         node.value 
     }
 }
 
-// impl <'a, T: Ord> Drop for PeekMut<'a, T> {
-//     fn drop(&mut self) {
-//         let borrow = self.node.borrow(); 
-//         let min_index = borrow.min_index; 
-//         let max_index = borrow.max_index; 
-//         drop(borrow); 
-//         self.bi_heap.bubble_down::<true>(min_index); 
-//         self.bi_heap.bubble_up::<true>(min_index); 
-//         self.bi_heap.bubble_down::<false>(max_index); 
-//         self.bi_heap.bubble_up::<false>(max_index); 
-//     }
-// }
+impl <'a, T: Ord> Drop for PeekMut<'a, T> {
+    fn drop(&mut self) {
+        if let Some(ref mut node) = self.node {
+            let borrow = node.borrow(); 
+            let min_index = borrow.min_index; 
+            let max_index = borrow.max_index; 
+            drop(borrow); 
+            self.bi_heap.bubble_down::<true>(min_index); 
+            self.bi_heap.bubble_up::<true>(min_index); 
+            self.bi_heap.bubble_down::<false>(max_index); 
+            self.bi_heap.bubble_up::<false>(max_index); 
+        }
+    }
+}

@@ -73,7 +73,7 @@ impl <T: Ord> BiHeap<T> {
         let value = handle.node_ref.upgrade().ok_or(ViewErr::MissValue)?; 
         let view = ViewMut {
             bi_heap: self, 
-            node: value, 
+            node: Some(value), 
         }; 
         Ok(view)
     }

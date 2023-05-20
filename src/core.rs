@@ -17,10 +17,12 @@ pub struct Indexer <T> {
     pub(crate) heap_ref: Weak<RefCell<BiVec<Rc<RefCell<Node<T>>>>>>, 
 }
 
-pub struct ViewMut <'a, T: Ord> {
+pub struct PeekMut <'a, T: Ord> {
     pub(crate) bi_heap: &'a mut BiHeap<T>,
     pub(crate) node: Rc<RefCell<Node<T>>>,
 }
+
+pub type ViewMut<'a, T> = PeekMut<'a, T>; 
 
 mod construct;
 mod push;

@@ -17,7 +17,6 @@ impl <'a, T: Ord> ViewMut<'a, T> {
         value 
     } 
     pub fn pop(self) -> T {
-        dbg!(Rc::strong_count(&self.node));
         let bor = self.node.borrow(); 
         let min_index = bor.min_index; 
         let max_index = bor.max_index; 
@@ -39,9 +38,21 @@ impl <'a, T: Ord> ViewMut<'a, T> {
             self.bi_heap.bubble_up::<false>(max_index); 
         }
         let node = self.node;
-        dbg!(Rc::strong_count(&node));
         let node = Rc::try_unwrap(node).ok().unwrap(); 
         let node = node.into_inner(); 
         node.value 
     }
 }
+
+// impl <'a, T: Ord> Drop for PeekMut<'a, T> {
+//     fn drop(&mut self) {
+//         let borrow = self.node.borrow(); 
+//         let min_index = borrow.min_index; 
+//         let max_index = borrow.max_index; 
+//         drop(borrow); 
+//         self.bi_heap.bubble_down::<true>(min_index); 
+//         self.bi_heap.bubble_up::<true>(min_index); 
+//         self.bi_heap.bubble_down::<false>(max_index); 
+//         self.bi_heap.bubble_up::<false>(max_index); 
+//     }
+// }

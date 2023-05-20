@@ -22,8 +22,9 @@ It can be used to modify the data in the heap, peek it, reset it, or remove it.
 
 ## Latest Version Log 
 
-- Add `iter` method. 
-- Add `peek_max_mut`, `peek_min_mut` methods. 
+- Remove useless feature 'threadsafe'. 
+- Rename `Handle` to `Indexer`. 
+- Add `Clone` trait simple implementation.  
 
 ## Others 
 

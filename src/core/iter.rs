@@ -10,9 +10,9 @@ impl <'a, T: Ord> Iterator for RefIter<'a, T> {
     type Item = &'a T; 
 
     fn next(&mut self) -> Option<Self::Item> {
-        let node = unsafe { self.bi_heap.0.try_borrow_unguarded() }.unwrap().views()[0].get(self.index)?; 
+        let node = unsafe { &*self.bi_heap.0.get() }.views()[0].get(self.index)?; 
         self.index += 1; 
-        let value = unsafe { node.try_borrow_unguarded() }.unwrap(); 
+        let value = unsafe { &*node.get() }; 
         let value = &value.value; 
         Some(value) 
     }

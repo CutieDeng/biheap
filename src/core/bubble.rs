@@ -4,7 +4,7 @@ use super::*;
 
 impl <T: Ord> BiHeap<T> {
     pub(crate) fn bubble_up<const IS_MIN_FIRST: bool>(&mut self, index: usize) {
-        let mut borrow = self.0.borrow_mut(); 
+        let borrow = unsafe { &mut *self.0.get() }; 
         debug_assert!(index < borrow.len());
         let mut slice = borrow.views_mut(); 
         let slice = 
@@ -23,26 +23,24 @@ impl <T: Ord> BiHeap<T> {
             let this = parent.1.first_mut().unwrap(); 
             let parent = &mut parent.0[parent_index]; 
             let should_swap; 
+            let this_v = unsafe { &mut *this.get() }; 
+            let parent_v = unsafe { &mut *parent.get() }; 
             {
-                let this = this.borrow(); 
-                let parent = parent.borrow(); 
                 should_swap = 
                     if IS_MIN_FIRST {
-                        this.value < parent.value
+                        this_v.value < parent_v.value
                     } else {
-                        this.value > parent.value
+                        this_v.value > parent_v.value
                     }; 
             }
             if should_swap {
-                swap::<Rc<RefCell<Node<T>>>>(this, parent); 
-                let mut this = this.borrow_mut(); 
-                let mut parent = parent.borrow_mut(); 
+                swap::<Rc<UnsafeCell<Node<T>>>>(this, parent); 
                 if IS_MIN_FIRST {
-                    this.min_index = index; 
-                    parent.min_index = parent_index; 
+                    this_v.min_index = parent_index; 
+                    parent_v.min_index = index; 
                 } else {
-                    this.max_index = index; 
-                    parent.max_index = parent_index; 
+                    this_v.max_index = parent_index; 
+                    parent_v.max_index = index; 
                 }
                 index = parent_index; 
             } else {
@@ -54,7 +52,7 @@ impl <T: Ord> BiHeap<T> {
 
 impl <T: Ord> BiHeap<T> {
     pub(crate) fn bubble_down<const IS_MIN_FIRST: bool>(&mut self, index: usize) {
-        let mut borrow = self.0.borrow_mut(); 
+        let borrow = unsafe { &mut *self.0.get() }; 
         debug_assert!(index < borrow.len()); 
         let mut slice = borrow.views_mut(); 
         let slice = 
@@ -77,8 +75,8 @@ impl <T: Ord> BiHeap<T> {
             let cell_ref; 
             let should_swap; 
             if let Some(right) = right {
-                let left_ref = left.borrow(); 
-                let right_ref = right.borrow(); 
+                let left_ref = unsafe { &mut *left.get() }; 
+                let right_ref = unsafe { &mut *right.get() }; 
                 if IS_MIN_FIRST {
                     if left_ref.value < right_ref.value {
                         select = left_index; 
@@ -105,19 +103,20 @@ impl <T: Ord> BiHeap<T> {
                 cell_ref = left; 
             }
             if IS_MIN_FIRST {
-                let this = this.borrow(); 
-                let cell = cell_ref.borrow(); 
+                let this = unsafe { &*this.get() }; 
+                let cell = unsafe { &*cell_ref.get() }; 
                 should_swap = this.value > cell.value; 
             } else {
-                let this = this.borrow(); 
-                should_swap = this.value < cell_ref.borrow().value; 
+                let this = unsafe { &*this.get() }; 
+                let cell = unsafe { &*cell_ref.get() }; 
+                should_swap = this.value < cell.value; 
             }
             if !should_swap {
                 break; 
             }
             swap(this, cell_ref); 
-            let mut this = this.borrow_mut(); 
-            let mut cell = cell_ref.borrow_mut(); 
+            let mut this = unsafe { &mut *this.get() };
+            let mut cell = unsafe { &mut *cell_ref.get() }; 
             if IS_MIN_FIRST {
                 this.min_index = index; 
                 cell.min_index = select; 

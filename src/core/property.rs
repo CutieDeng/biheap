@@ -12,7 +12,7 @@ impl <T: Ord> BiHeap<T> {
     /// assert_eq!(be.len(), 1); 
     /// ``` 
     pub fn len(&self) -> usize {
-        self.0.borrow().len() 
+        unsafe { &*self.0.get() } .len() 
     }
     /// Checks if the heap is empty. 
     /// 
@@ -40,40 +40,41 @@ impl <T: Ord> BiHeap<T> {
     /// assert!(be.is_empty());
     /// ``` 
     pub fn clear(&mut self) {
-        self.0.borrow_mut().clear();  
+        unsafe { &mut *self.0.get() }.clear();  
     }
 }
 
 impl <T: Ord + std::fmt::Debug> BiHeap<T> {
     #[cfg(test)]
     pub fn debug(&self) {
-        let borrow = self.0.borrow(); 
+        let borrow = unsafe { &mut *self.0.get() };
         let [v1, v2] = borrow.views(); 
         let iter = v1.iter().enumerate(); 
         eprintln!("min slice");
         for (i, v) in iter {
-            let min_index = v.borrow().min_index; 
-            let max_index = v.borrow().max_index; 
-            dbg!((i, min_index, max_index, &v.borrow().value));
+            let min_index = unsafe { &*v.get() }.min_index; 
+            let max_index = unsafe { &*v.get() }.max_index; 
+            dbg!((i, min_index, max_index, &unsafe { &*v.get() }.value));
         }
         eprintln!("---\nmax slice");
         let iter = v2.iter().enumerate(); 
         for (i, v) in iter {
-            let min_index = v.borrow().min_index; 
-            let max_index = v.borrow().max_index; 
-            dbg!((i, min_index, max_index, &v.borrow().value));
+            let min_index = unsafe { &*v.get() }.min_index; 
+            let max_index = unsafe { &*v.get() }.max_index; 
+            dbg!((i, min_index, max_index, &unsafe { &*v.get() }.value));
         } 
     }
     #[cfg(test)]
     pub fn check(&self) {
         use std::rc::Rc;
 
-        let borrow = self.0.borrow(); 
+        let borrow = unsafe { &*self.0.get() };
         let [v1, v2] = borrow.views(); 
         let iter = v1.iter().enumerate(); 
         for (i, v) in iter {
-            let min_index = v.borrow().min_index; 
-            let max_index = v.borrow().max_index; 
+
+            let min_index = unsafe { &* v.get() }.min_index; 
+            let max_index = unsafe { &* v.get() }.max_index; 
             assert_eq!(i, min_index); 
             let max = &v2[max_index]; 
             let eq = Rc::ptr_eq(&v, &max); 

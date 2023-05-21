@@ -22,9 +22,7 @@ It can be used to modify the data in the heap, peek it, reset it, or remove it.
 
 ## Latest Version Log 
 
-- Remove useless feature 'threadsafe'. 
-- Rename `Handle` to `Indexer`. 
-- Add `Clone` trait simple implementation.  
+- Changes the Usage of `RefCell` to `UnsafeCell` to improve the performance. 
 
 ## Others 
 

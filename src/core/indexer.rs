@@ -11,7 +11,7 @@ impl <T: Ord> BiHeap<T> {
     /// let handle = be.max_indexer(); 
     /// ``` 
     pub fn max_indexer(&self) -> Option<Handle<T>> {
-        let borrow = self.0.borrow(); 
+        let borrow = unsafe { &*self.0.get() }; 
         let slice = borrow.views(); 
         let slice = &slice[1]; 
         if slice.is_empty() {
@@ -39,7 +39,7 @@ impl <T: Ord> BiHeap<T> {
     /// let handle = be.min_indexer(); 
     /// ``` 
     pub fn min_indexer(&self) -> Option<Handle<T>> {
-        let borrow = self.0.borrow(); 
+        let borrow = unsafe { & *self.0.get() }; 
         let slice = borrow.views(); 
         let slice = &slice[0]; 
         if slice.is_empty() {

@@ -1,6 +1,6 @@
 [package]
 name = "biheap"
-version = "0.3.5" 
+version = "0.4.1" 
 edition = "2021"
 description = "A heap group that supports efficient removal of extreme elements."
 license = "MIT OR Apache-2.0"

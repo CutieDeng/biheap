@@ -23,8 +23,7 @@ impl <T: Ord> BiHeap<T> {
             return Err(ViewErr::MismatchHeap);  
         }
         let value = handle.node_ref.upgrade().ok_or(ViewErr::MissValue)?;
-        let value = unsafe { value.try_borrow_unguarded() }; 
-        let value = value.unwrap(); 
+        let value = unsafe { &*value.get() }; 
         let value = &value.value; 
         let value = unsafe { &*(value as *const T) }; 
         Ok(value) 
@@ -87,7 +86,7 @@ impl <'a, T: Ord> ViewMut<'a, T> {
     /// # Deprecated 
     /// Use `deref_mut` instead. 
     pub fn set(&mut self, mut value: T) -> T {
-        std::mem::swap(&mut value, &mut self.node.as_ref().unwrap().borrow_mut().value); 
+        std::mem::swap(&mut value, &mut unsafe { &mut *self.node.as_ref().unwrap().get() }.value); 
         value 
     } 
     /// Removes the value related to the handle from the heap and returns it. 
@@ -102,17 +101,19 @@ impl <'a, T: Ord> ViewMut<'a, T> {
     /// ``` 
     pub fn pop(mut self) -> T {
         let node = self.node.take().unwrap(); 
-        let bor = node.borrow(); 
-        let min_index = bor.min_index; 
-        let max_index = bor.max_index; 
-        drop(bor); 
-        let mut bivec = self.bi_heap.0.borrow_mut(); 
+        let (min_index, max_index); 
+        {
+            let bor = unsafe { &*node.get() }; 
+            min_index = bor.min_index; 
+            max_index = bor.max_index; 
+        }
+        let bivec = unsafe { &mut *self.bi_heap.0.get() }; 
         bivec.swap_remove(min_index, max_index); 
         let [slice1, slice2]  = bivec.views_mut(); 
         let mut min_exist = false; 
         let mut max_exist = false; 
-        slice1.get_mut(min_index).map(|f| { f.borrow_mut().min_index = min_index ; min_exist = true; } ); 
-        slice2.get_mut(max_index).map(|f| { f.borrow_mut().max_index = max_index ; max_exist = true; } ); 
+        slice1.get_mut(min_index).map(|f| { unsafe { &mut *f.get() } .min_index = min_index ; min_exist = true; } ); 
+        slice2.get_mut(max_index).map(|f| { unsafe { &mut *f.get() } .max_index = max_index ; max_exist = true; } ); 
         drop(bivec); 
         if min_exist {
             self.bi_heap.bubble_down::<true>(min_index);
@@ -131,10 +132,12 @@ impl <'a, T: Ord> ViewMut<'a, T> {
 impl <'a, T: Ord> Drop for PeekMut<'a, T> {
     fn drop(&mut self) {
         if let Some(ref mut node) = self.node {
-            let borrow = node.borrow(); 
-            let min_index = borrow.min_index; 
-            let max_index = borrow.max_index; 
-            drop(borrow); 
+            let (min_index, max_index); 
+            {
+                let borrow = unsafe { & *node.get() }; 
+                min_index = borrow.min_index; 
+                max_index = borrow.max_index; 
+            } 
             self.bi_heap.bubble_down::<true>(min_index); 
             self.bi_heap.bubble_up::<true>(min_index); 
             self.bi_heap.bubble_down::<false>(max_index); 
@@ -147,15 +150,20 @@ impl <T: Ord> Deref for PeekMut<'_, T> {
     type Target = T; 
 
     fn deref(&self) -> &Self::Target {
-        unsafe { &self.node.as_ref().unwrap().try_borrow_unguarded().unwrap().value } 
+        let r; 
+        unsafe { 
+            r = &*self.node.as_ref().unwrap().get(); 
+        } 
+        &r.value
     }
 } 
 
 impl <T: Ord> DerefMut for PeekMut<'_, T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
+        let r; 
         unsafe { 
-            let borrow = self.node.as_mut().unwrap().try_borrow_unguarded().unwrap() as *const Node<T> as *mut Node<T>; 
-            &mut (*borrow).value 
+            r = &mut *self.node.as_ref().unwrap().get(); 
         } 
+        &mut r.value 
     }
 } 

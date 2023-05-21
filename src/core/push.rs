@@ -10,9 +10,9 @@ impl <T: Ord> BiHeap<T> {
     /// be.push(1); 
     /// ``` 
     pub fn push(&mut self, value: T) -> Handle<T> {
-        let mut borrow = self.0.borrow_mut(); 
+        let borrow = unsafe { &mut *self.0.get() }; 
         let len = borrow.len(); 
-        let value_rc = Rc::new(RefCell::new(
+        let value_rc = Rc::new(UnsafeCell::new(
             Node {
                 value,
                 min_index: len, 

@@ -22,9 +22,7 @@ It can be used to modify the data in the heap, peek it, reset it, or remove it.
 
 ## Latest Version Log 
 
-- Add the zero-sized type support for `BiVec`. 
-- If `T` is zero sized, bubble operation would be ignored. 
-- Add some basic tests for BiVec. 
+- `threadsafe` feature added. 
 
 ## Others 
 

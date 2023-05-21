@@ -20,3 +20,6 @@ mod property;
 
 pub mod view;
 pub mod order;
+
+unsafe impl <T: Send> Send for BiVec<T> {} 
+unsafe impl <T: Sync> Sync for BiVec<T> {} 

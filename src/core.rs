@@ -1,9 +1,18 @@
-use std::rc::{Rc, Weak};
 use std::cell::UnsafeCell;
 
 use crate::bivec::BiVec;
 
 pub struct BiHeap <T: Ord> (pub(crate) Rc<UnsafeCell<BiVec<Rc<UnsafeCell<Node<T>>>>>>); 
+
+#[cfg(not(feature = "threadsafe"))]
+type Rc<T> = std::rc::Rc<T>; 
+#[cfg(not(feature = "threadsafe"))]
+type Weak<T> = std::rc::Weak<T>; 
+
+#[cfg(feature = "threadsafe")] 
+type Rc<T> = std::sync::Arc<T>; 
+#[cfg(feature = "threadsafe")] 
+type Weak<T> = std::sync::Weak<T>; 
 
 pub struct Node <T> {
     pub(crate) value: T, 
@@ -41,3 +50,8 @@ mod extend;
 mod from;
 mod iter;
 mod into;
+
+#[cfg(feature = "threadsafe")]
+unsafe impl <T> Sync for BiHeap<T> where T: Ord + Sync {} 
+#[cfg(feature = "threadsafe")]
+unsafe impl <T> Send for BiHeap<T> where T: Ord + Send {} 

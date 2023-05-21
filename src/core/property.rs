@@ -66,7 +66,7 @@ impl <T: Ord + std::fmt::Debug> BiHeap<T> {
     }
     #[cfg(test)]
     pub fn check(&self) {
-        use std::rc::Rc;
+        use crate::core::Rc;
 
         let borrow = unsafe { &*self.0.get() };
         let [v1, v2] = borrow.views(); 

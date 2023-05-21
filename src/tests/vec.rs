@@ -1,4 +1,5 @@
-use crate::{bivec::BiVec, BiHeap};
+use super::*; 
+use crate::bivec::BiVec;
 
 #[test] 
 fn zero_vec1() {

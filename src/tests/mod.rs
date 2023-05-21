@@ -6,4 +6,6 @@ mod lazy_test;
 mod modifer; 
 mod iter;
 
-mod vec; 
+mod vec;
+
+mod thread; 

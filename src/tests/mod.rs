@@ -8,4 +8,5 @@ mod iter;
 
 mod vec;
 
+#[cfg(feature = "threadsafe")]
 mod thread; 

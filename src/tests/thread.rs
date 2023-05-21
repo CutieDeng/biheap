@@ -1,6 +1,5 @@
 use super::*;
 
-#[cfg(feature = "threadsafe")]
 #[test]
 fn thread_test1() {
 

@@ -2,12 +2,13 @@ use std::alloc::Layout;
 use std::ptr;
 use std::marker::PhantomData;
 
-use super::BiVec;
+use super::{BiVec, default_dangle}; 
 
 impl <T> BiVec<T> {
     pub fn new() -> Self {
         BiVec {
-            contents: [ptr::null(), ptr::null()], 
+            // contents: [ptr::null(), ptr::null()], 
+            contents: [default_dangle(), default_dangle()],
             len: 0, 
             capacity: 0, 
             flag: PhantomData, 
@@ -17,7 +18,7 @@ impl <T> BiVec<T> {
 
 impl <T> BiVec<T> {
     pub fn with_capacity(capacity: usize) -> Self {
-        if capacity == 0 {
+        if std::mem::size_of::<T>() == 0 || capacity == 0 {
             return BiVec::new(); 
         }
         let layout : Layout = Layout::array::<T>(capacity).unwrap(); 
@@ -43,9 +44,14 @@ impl <T> Drop for BiVec<T> {
                 }
             } 
         }
-        let layout : Layout = Layout::array::<T>(self.capacity).unwrap(); 
-        unsafe { std::alloc::dealloc(self.contents[0] as *mut u8, layout) }; 
-        unsafe { std::alloc::dealloc(self.contents[1] as *mut u8, layout) }; 
+        if std::mem::size_of::<T>() == 0 { 
+            return; 
+        }
+        if self.capacity != 0 {
+            let layout : Layout = Layout::array::<T>(self.capacity).unwrap(); 
+            unsafe { std::alloc::dealloc(self.contents[0] as *mut u8, layout) }; 
+            unsafe { std::alloc::dealloc(self.contents[1] as *mut u8, layout) }; 
+        }
     } 
 }
 

@@ -1,6 +1,9 @@
 use std::cmp::Ordering;
 
 pub fn min_heapize <T, F: FnMut(&T, &T) -> Ordering> (ar: &mut [T], mut f: F) {
+    if std::mem::size_of::<T>() == 0 {
+        return; 
+    }
     let len = ar.len(); 
     if len < 2 {
         return; 

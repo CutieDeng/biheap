@@ -4,10 +4,14 @@ use std::ptr;
 use super::BiVec;
 
 impl <T> BiVec<T> {
-    pub fn reserve(&mut self, capacity: usize) {
+    pub fn set_capacity_or_nothing(&mut self, capacity: usize) {
         if self.capacity >= capacity {
             return; 
         } 
+        if std::mem::size_of::<T>() == 0 {
+            self.capacity = capacity; 
+            return; 
+        }
         let layout = std::alloc::Layout::array::<T>(capacity).unwrap(); 
         let ptr = unsafe { std::alloc::alloc(layout) } as *const T; 
         let ptr2 = unsafe { std::alloc::alloc(layout) } as *const T; 
@@ -31,6 +35,10 @@ impl <T> BiVec<T> {
         if self.capacity == self.len {
             return ; 
         }
+        if std::mem::size_of::<T>() == 0 {
+            self.capacity = self.len; 
+            return ; 
+        } 
         let (ptr, ptr2); 
         if self.len != 0 {
             let layout = std::alloc::Layout::array::<T>(self.len).unwrap(); 
@@ -56,6 +64,10 @@ impl <T> BiVec<T> {
         self.capacity = self.len; 
     }
     pub fn clear(&mut self) {
+        if std::mem::size_of::<T>() == 0 {
+            self.len = 0; 
+            return ; 
+        } 
         let len = self.len; 
         for content in self.contents {
             for i in 0..len {
@@ -67,6 +79,10 @@ impl <T> BiVec<T> {
         }
         self.len = 0; 
     } 
+    pub fn reserve(&mut self, add_capacity: usize) {
+        let capacity = self.capacity + add_capacity; 
+        self.set_capacity_or_nothing(capacity); 
+    } 
 }
 
 #[test] 
@@ -76,9 +92,9 @@ fn reserve_1() {
     bivec.reserve(10); 
     assert_eq!(bivec.capacity(), 10);  
     bivec.reserve(5); 
-    assert_eq!(bivec.capacity(), 10); 
+    assert_eq!(bivec.capacity(), 15); 
     bivec.reserve(30); 
-    assert_eq!(bivec.capacity(), 30); 
+    assert_eq!(bivec.capacity(), 45); 
 }
 
 #[test] 

@@ -8,6 +8,11 @@ impl <T> BiVec<T> {
         }
         let (a, b); 
         self.len -= 1; 
+        if std::mem::size_of::<T>() == 0 {
+            a = unsafe { std::mem::zeroed() }; 
+            b = unsafe { std::mem::zeroed() }; 
+            return Some((a, b)); 
+        } 
         unsafe {
             a = self.contents[0].add(self.len).read(); 
             b = self.contents[1].add(self.len).read(); 
@@ -21,6 +26,9 @@ impl <T> BiVec<T> {
         if first_index >= self.len || second_index >= self.len {
             return None; 
         }
+        if std::mem::size_of::<T>() == 0 {
+            return self.pop();
+        } 
         let (p1, p2); 
         let (a, b); 
         self.len -= 1; 

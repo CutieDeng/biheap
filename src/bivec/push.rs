@@ -1,3 +1,5 @@
+use std::mem::forget;
+
 use super::BiVec;
 
 impl <T> BiVec<T> {
@@ -6,6 +8,12 @@ impl <T> BiVec<T> {
         if self.len == self.capacity {
             return ; 
         }
+        if std::mem::size_of::<T>() == 0 {
+            self.len += 1; 
+            let t = element.take().unwrap(); 
+            forget(t); 
+            return ; 
+        } 
         let (p1, p2); 
         unsafe {
             p1 = self.contents[0].add(self.len) as *mut T; 
@@ -22,7 +30,7 @@ impl <T> BiVec<T> {
         let mut packed = Some((a, b)); 
         self.push_inplace(&mut packed); 
         if packed.is_some() {
-            let capa = self.capacity * 2 + 2; 
+            let capa = self.capacity + 2; 
             self.reserve(capa); 
             self.push_inplace(&mut packed); 
         }

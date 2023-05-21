@@ -4,6 +4,9 @@ use super::*;
 
 impl <T: Ord> BiHeap<T> {
     pub(crate) fn bubble_up<const IS_MIN_FIRST: bool>(&mut self, index: usize) {
+        if std::mem::size_of::<T>() == 0 {
+            return; 
+        }
         let borrow = unsafe { &mut *self.0.get() }; 
         debug_assert!(index < borrow.len());
         let mut slice = borrow.views_mut(); 
@@ -52,6 +55,9 @@ impl <T: Ord> BiHeap<T> {
 
 impl <T: Ord> BiHeap<T> {
     pub(crate) fn bubble_down<const IS_MIN_FIRST: bool>(&mut self, index: usize) {
+        if std::mem::size_of::<T>() == 0 {
+            return ; 
+        }
         let borrow = unsafe { &mut *self.0.get() }; 
         debug_assert!(index < borrow.len()); 
         let mut slice = borrow.views_mut(); 

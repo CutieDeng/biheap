@@ -23,6 +23,7 @@ It can be used to modify the data in the heap, peek it, reset it, or remove it.
 ## Latest Version Log 
 
 - `threadsafe` feature added. 
+- Add `Sync` and `Send` traits for any `Indexer`. 
 
 ## Others 
 

@@ -58,3 +58,8 @@ impl <T: Ord> BiHeap<T> {
         self.min_indexer() 
     }
 }
+
+#[cfg(feature = "threadsafe")]
+unsafe impl <T> Send for Indexer<T> {} 
+#[cfg(feature = "threadsafe")] 
+unsafe impl <T> Sync for Indexer<T> {} 
